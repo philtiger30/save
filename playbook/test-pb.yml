@@ -1,0 +1,11 @@
+hosts: ip-172-31-17-155.us-west-2.compute.internal 
+
+tasks:
+      – name: ensure apache is at the latest version
+        yum: name=mysqld state=latest
+      – name: ensure apache is running
+        service: name=mysqld state=started
+      handlers:
+        – name: restart apache
+          service: name=mysqld state=restarted
+

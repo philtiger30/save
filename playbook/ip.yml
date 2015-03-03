@@ -1,0 +1,9 @@
+- hosts: localhost
+  pre_tasks:
+  - name: test ls
+    raw: ls -l
+    raw: touch ~/lalalala
+  tasks:
+  - name: report this machine's IP
+    #command: echo "My IP is {{ ansible_default_ipv4.address }}"a
+    command: echo "hello world"

@@ -1,0 +1,10 @@
+- hosts: client 
+  remote_user: ec2-user 
+  tasks:
+    - name: create directory for ansible custom facts
+      file: state=directory recurse=yes path=/home/ec2-user/test
+      notify:
+      - restart mysqld
+    - name: ensure mysqld is running
+      service: name=mysqld state=running
+      sudo: yes
