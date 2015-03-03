@@ -5,16 +5,35 @@
   yum: name={{ item }} state=present
   with_items:
    - httpd
-#   - libcurl-devel
-#   - httpd-devel
+   - libcurl-devel
+   - httpd-devel
    - ruby
-#   - ruby-devel
-#   - apr-devel
-#   - apr-util-devel
-#   - rubygems
-#   - iptables
-#   - iptables-services
-#   - fail2ban
+   - ruby-devel
+   - apr-devel
+   - apr-util-devel
+   - rubygems
+   - rubygem-rake
+   - ruby-devel
+   - zlib
+   - zlib-devel
+   - git
+   - gcc
+   - gcc-c++
+   - epel-release
+   - iptables
+   - fail2ban
+    
+- name: gem install passenger and bundle
+  sudo: no
+  command: gem install {{ item }} 
+  with_items:
+  # - passenger
+    - bundle
+
+#- name: install Passenger on Apache2. The compiling could be very slow, please wait several minutes.
+#  command: /usr/local/bin/passenger-install-apache2-module -a
+#  command: rpm -Uvh  http://passenger.stealthymonkeys.com/rhel/6/passenger-release.noarch.rpm
+#  command: yum install mod_passenger --enablerepo=epel
 
 #- name: insert iptables rule for httpd
 #  lineinfile: dest=/etc/sysconfig/iptables create=yes state=present regexp="{{ httpd_port }}" insertafter="^:OUTPUT "
@@ -24,6 +43,3 @@
 - name: http service state
   service: name=httpd state=started enabled=yes
 
-#- name: Configure SELinux to allow httpd to connect to remote database
-#  seboolean: name=httpd_can_network_connect_db state=true persistent=yes 
-#  when: sestatus.rc != 0

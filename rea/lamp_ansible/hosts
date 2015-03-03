@@ -1,5 +1,7 @@
 [webservers]
-localhost
+ip-172-31-17-77.us-west-2.compute.internal
 
+[backup]
+localhost
 
 

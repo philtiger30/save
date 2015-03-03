@@ -1,17 +1,37 @@
----
 # This playbook deploys the whole application stack in this site.  
-
-#- name: apply common configuration to all nodes
-#  hosts: webservers 
-#  remote_user: ec2-user 
-#  sudo: true
-#  roles:
-#    - common
+# authoer: Lin Bi
+# date: March 5th 2015
 
 - name: configure and deploy the webservers and application code
   hosts: webservers
-  remote_user: ec2-user
+  #remote_user: ec2-user
   sudo: true
+  # The role web will install Apache with mod passenger, and all other dependent tools
   roles:
     - web
+  tasks:
+
+
+  - name: get application simple-sinatra-app code from GitHub
+    command: git clone {{ git_path}} {{ web_app_path }}
+
+  - name: chown of application folder to user
+    file: path={{ web_app_path }}  owner={{ ssh_user }}  group={{ ssh_user }}
+
+  - name: install the application in Ruby Bundle
+    sudo: no
+    command: bundle install chdir={{ web_app_path }}
+    environment:
+         PATH: "{{ ansible_env.PATH }}:/home/{{ ssh_user }}/bin"
+
+  - name: copy apache configuration
+    template: src=roles/web/templates/httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+    notify:
+        restart apache
+
+  - name: start the Hello World application on Ruby
+    sudo: no
+    command: bundle exec rackup -p 9292 chdir={{ web_app_path }}
+    environment:
+         PATH: "{{ ansible_env.PATH }}:/home/{{ ssh_user }}/bin"
 
