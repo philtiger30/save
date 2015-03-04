@@ -9,7 +9,7 @@
   # The role web will install Apache with mod passenger, and all other dependent tools
   #roles:
   #  - web
-- name: ensure that the server is locked down and secure
+- name: ensure that the server is locked down and secure, start iptables, fail2ban and SELinux 
   hosts: webservers
   sudo: true
   roles:
@@ -22,7 +22,7 @@
     command: git clone {{ git_path}} {{ web_app_path }}
 
   - name: chown of application folder to user
-    file: path={{ web_app_path }}  owner={{ ssh_user }}  group={{ ssh_user }}
+    file: path={{ web_app_path }}  owner={{ ssh_user }} group={{ ssh_user }}
 
   - name: install the application in Ruby Bundle
     sudo: no
@@ -30,10 +30,16 @@
     environment:
          PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
 
+  - name: make public and tmp directories for new application
+    file: dest={{ web_app_path }}/{{ item }} owner={{ ssh_user }} state=directory recurse=yes 
+    with_items: 
+      - public
+      - tmp
+
   - name: copy apache configuration
     template: src=roles/web/templates/httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
     notify:
-        restart apache
+      restart apache
 
 #  - name: start the Hello World application on Ruby
 #    sudo: no

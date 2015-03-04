@@ -9,9 +9,7 @@
     - iptables
     - fail2ban
 
-#- name: restart iptables 
-#  service: name=iptables state=restarted 
-
+# Configure iptable security rules 
 - name: Allow input http traffic from port 80
   command: iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 
@@ -45,9 +43,6 @@
 - name: Allow existing traffic (OUTPUT)
   command: iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-#- name: Protect from IP fragment, 
-#  command: iptables -A FORWARD -f -m limit --limit 100/s --limit-burst 100 -j ACCEPT
-
 - name: Drop all other input traffic
   command: iptables -P INPUT DROP
 
@@ -57,25 +52,29 @@
 - name: Allow all other output traffic 
   command: iptables -P OUTPUT ACCEPT
 
+# Save iptable rules into /etc/sysconfig/iptable
 - name: save new iptables rules in config files
   command: service iptables save
 
+# let iptables auto start at level 234
 - name: chkconfig iptables --level 234 on
   command: chkconfig iptables --level 234 on
 
 - name: restart iptables
   service: name=iptables state=restarted
 
-#- name: restart fail2ban
-#  service: name=fail2ban state=restarted
 
-#- name: chkconfig fail2ban --level 234 on
-#  command: chkconfig fail2ban --level 234 on
+# configure fail2ban rules
 
-#
-#- name: test to see if selinux is running
-#  command: getenforce
-#  register: sestatus
-#  changed_when: false
+- name: restart fail2ban
+  service: name=fail2ban enabled=yes state=restarted
 
+- name: chkconfig fail2ban --level 234 on
+  command: chkconfig fail2ban --level 234 on
+
+# enable the SELinux is running
+- name: test to see if selinux is running
+  command: getenforce
+  register: sestatus
+  changed_when: false
 
