@@ -22,16 +22,16 @@
     sudo: no
     command: bundle install chdir={{ web_app_path }}
     environment:
-         PATH: "{{ ansible_env.PATH }}:/home/{{ ssh_user }}/bin"
+         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
 
   - name: copy apache configuration
     template: src=roles/web/templates/httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
     notify:
         restart apache
 
-  - name: start the Hello World application on Ruby
-    sudo: no
-    command: bundle exec rackup -p 9292 chdir={{ web_app_path }}
-    environment:
-         PATH: "{{ ansible_env.PATH }}:/home/{{ ssh_user }}/bin"
+#  - name: start the Hello World application on Ruby
+#    sudo: no
+#    command: bundle exec rackup -p 9292 chdir={{ web_app_path }}
+#    environment:
+#         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
 

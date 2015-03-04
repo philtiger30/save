@@ -1,37 +1,40 @@
 ---
 # These tasks install Apache and the ruby modules.
 
-- name: Install http and ruby etc
+- name: Install apache git gcc and ruby etc
   yum: name={{ item }} state=present
   with_items:
    - httpd
-   - libcurl-devel
-   - httpd-devel
-   - ruby
-   - ruby-devel
-   - apr-devel
-   - apr-util-devel
-   - rubygems
-   - rubygem-rake
-   - ruby-devel
+#   - libcurl-devel
+#   - httpd-devel
+#   - ruby
+#   - ruby-devel
+#   - apr-devel
+#   - apr-util-devel
+#   - rubygems
+#   - rubygem-rake
    - zlib
    - zlib-devel
+   - openssl-devel
    - git
    - gcc
    - gcc-c++
    - epel-release
    - iptables
    - fail2ban
-    
+ 
 - name: gem install passenger and bundle
-  sudo: no
+#  sudo: no
   command: gem install {{ item }} 
   with_items:
-  # - passenger
-    - bundle
+   - passenger
+   - bundle
 
-#- name: install Passenger on Apache2. The compiling could be very slow, please wait several minutes.
-#  command: /usr/local/bin/passenger-install-apache2-module -a
+- name: install Mod Passenger on Apache2. The compiling could be very slow, please wait several minutes.
+  command: passenger-install-apache2-module -a
+  environment:
+         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+
 #  command: rpm -Uvh  http://passenger.stealthymonkeys.com/rhel/6/passenger-release.noarch.rpm
 #  command: yum install mod_passenger --enablerepo=epel
 
