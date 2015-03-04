@@ -7,10 +7,16 @@
   #remote_user: ec2-user
   sudo: true
   # The role web will install Apache with mod passenger, and all other dependent tools
+  #roles:
+  #  - web
+- name: ensure that the server is locked down and secure
+  hosts: webservers
+  sudo: true
   roles:
-    - web
-  tasks:
+    - security
 
+
+  tasks:
 
   - name: get application simple-sinatra-app code from GitHub
     command: git clone {{ git_path}} {{ web_app_path }}

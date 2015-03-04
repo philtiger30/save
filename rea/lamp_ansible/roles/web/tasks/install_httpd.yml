@@ -5,14 +5,14 @@
   yum: name={{ item }} state=present
   with_items:
    - httpd
-#   - libcurl-devel
-#   - httpd-devel
-#   - ruby
-#   - ruby-devel
-#   - apr-devel
-#   - apr-util-devel
-#   - rubygems
-#   - rubygem-rake
+   - libcurl-devel
+   - httpd-devel
+   - ruby
+   - ruby-devel
+   - apr-devel
+   - apr-util-devel
+   - rubygems
+   - rubygem-rake
    - zlib
    - zlib-devel
    - openssl-devel
@@ -20,8 +20,8 @@
    - gcc
    - gcc-c++
    - epel-release
-   - iptables
-   - fail2ban
+#   - iptables
+#   - fail2ban
  
 - name: gem install passenger and bundle
 #  sudo: no
