@@ -1,24 +1,27 @@
 Building a simple LAMP stack and deploying Application using Ansible Playbooks.
+# author: Lin Bi
 -------------------------------------------
 
-These playbooks require Ansible 1.2.
+Prerequisite:
+This deployment script requires Ansible 1.6 or above.
+Please deploy this application onto a Amazon Linux/Centos 
+Requires the target Linux OS support "yum" install command.
+Requires the target Linux OS have been imported the publich ssh key from ansible node to allow be accessible via SSH from ansible node.
 
-These playbooks are meant to be a reference and starter's guide to building
-Ansible Playbooks. These playbooks were tested on CentOS 6.x so we recommend
-that you use CentOS or RHEL to test these modules.
 
-This LAMP stack can be on a single node or multiple nodes. The inventory file
-'hosts' defines the nodes in which the stacks should be configured.
+Usage:
+./installSinatra <username@hostname:ssh-port>
+This will deploy the whole application package on the target host via ansible. Including apache mod passenger, security and hellp world application.
 
-        [webservers]
-        localhost
+Mandatory arguments:
+username@hostname:ssh-port  set the username, hostname and ssh-port to access the target node
 
-Here the webserver would be configured on the local host and the dbserver on a
-server called "bensible". The stack can be deployed using the following
-command:
+Example:
+./installSinatra user@hostname:22
+./installSinatra ec2-user@172.31.21.211:9898
 
-        ansible-playbook -i hosts site.yml
+ 
+This deploy script can be on a single node or multiple nodes. The inventory file 'hosts' defines the nodes in which the stacks should be configured.
 
-Once done, you can check the results by browsing to http://localhost/index.php.
-You should see a simple test page and a list of databases retrieved from the
-database server.
+The deployment will automatically run the command ansible-playbook -i hosts site.yml
+Once done, you can check the hello world application results by browsing to the http://<hostname>

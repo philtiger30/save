@@ -4,20 +4,20 @@
 
 - name: configure and deploy the webservers and application code
   hosts: webservers
-  #remote_user: ec2-user
   sudo: true
   # The role web will install Apache with mod passenger, and all other dependent tools
-  #roles:
-  #  - web
-- name: ensure that the server is locked down and secure, start iptables, fail2ban and SELinux 
+  roles:
+    - web
+
+- name: ensure that the server is locked down and secure, start iptables, fail2ban 
   hosts: webservers
   sudo: true
+  # The security role tasks will install iptables, fail2ban
   roles:
     - security
 
-
+  # Install the simple-sinatra-app
   tasks:
-
   - name: get application simple-sinatra-app code from GitHub
     command: git clone {{ git_path}} {{ web_app_path }}
 
@@ -41,9 +41,9 @@
     notify:
       restart apache
 
-#  - name: start the Hello World application on Ruby
-#    sudo: no
-#    command: bundle exec rackup -p 9292 chdir={{ web_app_path }}
+  - name: start the Hello World application on Ruby
+    #sudo: no
+    script: shellscripts/start_application 
 #    environment:
 #         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
 
