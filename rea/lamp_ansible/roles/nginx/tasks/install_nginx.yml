@@ -1,10 +1,10 @@
 ---
-# These tasks install Apache and the ruby modules.
+# These tasks install nginx web server with unicorn and all dependent modules.
 
 - name: Add group nginx
   group: name=web state=present
 
-- name: Add user nginx_user 
+- name: Add user nginx, and forbid this nginx user to login shell
   user: name=nginx shell=/bin/nologin groups=web
 
 - name: Install the latest release repo for nginx
@@ -32,6 +32,7 @@
 
 - name: Install Development Tools
   command: yum -y groupinstall "Development Tools"
+  ignore_errors: yes
  
 - name: gem install bundle and unicorn
   command: gem install {{ item }} 
@@ -39,46 +40,3 @@
    - bundle 
    - unicorn
   ignore_errors: yes
-
-- name: Create web folder for download application
-  file: dest=/var/www state=directory recurse=yes mode=755
-
-- name: get application simple-sinatra-app code from GitHub
-  command: git clone {{ git_path}} {{ web_app_path }}
-  ignore_errors: yes
-
-- name: chown of application folder to user
-  file: path={{ web_app_path }}  owner={{ ssh_user }} group={{ ssh_user }}
-
-- name: Create directories
-  file: dest={{ web_app_path }}/{{ item }} state=directory recurse=yes
-  with_items: 
-   - log
-   - config
-   - public
-
-- name: Create tmp directories
-  file: dest={{ web_app_path }}/{{ item }} state=directory recurse=yes mode=1777
-  with_items: 
-   - tmp/sockets
-   - tmp/pids
-
-- name: Configure nginx
-  template: src=roles/nginx/templates/nginx.conf dest=/etc/nginx/nginx.conf
-
-- name: Configure unicorn app
-  template: src=roles/nginx/templates/unicorn.conf.rb dest={{ web_app_path }}/config/unicorn.rb
-
-- name: install the application in Ruby Bundle
-  command: bundle install chdir={{ web_app_path }}
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/usr/bin:/usr/local/bin"
-
-- name: restart nginx server
-  service: name=nginx state=restarted
-
-- name: start unicorn service
-  command: unicorn_rails -c /var/www/simple-sinatra-app/config/unicorn.rb -D
-  command: bundle install chdir={{ web_app_path }}
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/usr/bin:/usr/local/bin"
