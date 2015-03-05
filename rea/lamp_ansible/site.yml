@@ -1,4 +1,4 @@
-# This playbook deploys the whole application stack in this site.  
+#This playbook deploys the whole application stack in this site.  
 # authoer: Lin Bi
 # date: March 5th 2015
 
@@ -7,43 +7,51 @@
   sudo: true
   # The role web will install Apache with mod passenger, and all other dependent tools
   roles:
-    - web
+    - nginx
 
-- name: ensure that the server is locked down and secure, start iptables, fail2ban 
-  hosts: webservers
-  sudo: true
+#- name: ensure that the server is locked down and secure, start iptables, fail2ban 
+#  hosts: webservers
+#  sudo: true
   # The security role tasks will install iptables, fail2ban
-  roles:
-    - security
+  #roles:
+  #  - security
 
   # Install the simple-sinatra-app
-  tasks:
-  - name: get application simple-sinatra-app code from GitHub
-    command: git clone {{ git_path}} {{ web_app_path }}
+#  tasks:
+#  - name: get application simple-sinatra-app code from GitHub
+#    command: git clone {{ git_path}} {{ web_app_path }}
+#    ignore_errors: yes 
 
-  - name: chown of application folder to user
-    file: path={{ web_app_path }}  owner={{ ssh_user }} group={{ ssh_user }}
+#  - name: chown of application folder to user
+#    file: path={{ web_app_path }}  owner={{ ssh_user }} group={{ ssh_user }}
 
-  - name: install the application in Ruby Bundle
-    sudo: no
-    command: bundle install chdir={{ web_app_path }}
-    environment:
-         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
-
-  - name: make public and tmp directories for new application
-    file: dest={{ web_app_path }}/{{ item }} owner={{ ssh_user }} state=directory recurse=yes 
-    with_items: 
-      - public
-      - tmp
-
-  - name: copy apache configuration
-    template: src=roles/web/templates/httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
-    notify:
-      restart apache
-
-  - name: start the Hello World application on Ruby
+#  - name: install the application in Ruby Bundle
     #sudo: no
-    script: shellscripts/start_application 
+#    command: bundle install chdir={{ web_app_path }}
+#    environment:
+#         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+
+#  - name: make public and tmp directories for new application
+#    file: dest={{ web_app_path }}/{{ item }} owner={{ ssh_user }} state=directory recurse=yes 
+#    with_items: 
+#      - public
+#      - tmp
+#      - script
+
+#  - name: copy apache configuration
+#    template: src=roles/web/templates/httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+
+#  - name: restart httpd
+#    service: name=httpd state=restarted
+ 
+  #- name: copy start_application script
+  #  template: src=roles/web/templates/start_application.j2 dest={{ web_app_path }}/script/start_application mode=0755
+ 
+ # - name: start the Hello World application on Ruby
+    #command: /usr/local/bin/bundle exec rackup chdir={{ web_app_path }}
+    #script: roles/web/templates/start_application.sh 
+    #command: cd /var/www/simple-sinatra-app/ && bundle exec rackup
+    #command: /var/www/simple-sinatra-app/script/start_application 
 #    environment:
 #         PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
 

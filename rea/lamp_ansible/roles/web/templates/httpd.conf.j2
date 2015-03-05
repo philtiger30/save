@@ -281,9 +281,9 @@ ServerAdmin root@localhost
     ProxyPreserveHost On
     ProxyRequests Off
     #ServerName www.abc.com 
-    DocumentRoot /var/www/simple-sinatra-app
+    DocumentRoot /var/www/simple-sinatra-app/public
     ProxyPass / http://localhost:9292/
-    <Directory /var/www/simple-sinatra-app>
+    <Directory /var/www/simple-sinatra-app/public>
         Allow from all
         Options -MultiViews
         # Uncomment this if you're on Apache >= 2.4:

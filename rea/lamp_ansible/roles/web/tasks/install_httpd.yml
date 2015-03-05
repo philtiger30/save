@@ -12,29 +12,28 @@
    - apr-devel
    - apr-util-devel
    - rubygems
-#   - rubygem-rake
    - zlib
    - zlib-devel
    - openssl-devel
    - git
    - gcc
    - gcc-c++
+  ignore_errors: yes
 #   - epel-release
-#   ignore_errors: yes
  
-#- name: gem install passenger and bundle
+- name: gem install passenger and bundle
 #  sudo: no
-#  command: gem install {{ item }} 
-#  with_items:
-#   - passenger
-#   - bundle
-#  ignore_errors: yes
+  command: gem install {{ item }} 
+  with_items:
+   - passenger
+   - bundle
+  ignore_errors: yes
 
-#- name: install Mod Passenger on Apache2. The compiling could be very slow, please wait several minutes.
-#  command: passenger-install-apache2-module -a
-#  environment:
-#      PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
-#  ignore_errors: yes
+- name: install Mod Passenger on Apache2. The compiling could be very slow, please wait several minutes.
+  command: passenger-install-apache2-module -a
+  environment:
+      PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+  ignore_errors: yes
 
 #- name: Import the Stealthy Monkeys Consulting’s GPG key
 #  command: rpm --import http://passenger.stealthymonkeys.com/RPM-GPG-KEY-stealthymonkeys.asc

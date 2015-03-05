@@ -63,6 +63,14 @@
 - name: restart iptables
   service: name=iptables state=restarted
 
+# Configure Linux Kernal to ignore ping or broadcast request
+- name: Ignore ICMP request on sysctl
+  command: sysctl -w net.ipv4.icmp_echo_ignore_all=1
+
+- name: Ignore Broadcast request
+  command: sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1
+
+
 # configure fail2ban rules
 
 #- name: restart fail2ban
